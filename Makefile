@@ -16,7 +16,10 @@ TARGET = frogger.exe
 # Archivos fuente del proyecto.
 SRC = main.cpp \
       interfaz/tableroNcurses.cpp \
-      logica/rana.cpp
+      logica/rana.cpp \
+	  logica/carro.cpp \
+	  controlador/revisionEntradas.cpp \
+	  logica/movCarros.cpp
 
 # Convierte cada archivo .cpp en su respectivo .o.
 OBJ = $(SRC:.cpp=.o)

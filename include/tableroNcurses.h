@@ -27,12 +27,17 @@ public:
 
     // Dibuja la rana en una posicion dentro del tablero.
     void dibujarRana(int filaRana, int columnaRana);
+    
+    // Dibuja el rano en una posición dentro del tablero
+    void dibujarCarro(int filaCarro, int columnaCarro);
 
     //lee tecla
     int leerTecla();
 
     // Espera a que el usuario presione una tecla.
     void esperarTecla();
+
+    void perder();
 
 private:
     // Revisa si la terminal tiene espacio suficiente para mostrar el tablero.

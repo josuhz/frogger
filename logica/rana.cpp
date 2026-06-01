@@ -39,3 +39,7 @@ void Rana::moverDerecha() {
         columna++;
     }
 }
+void Rana::teleportar(int filon, int columnon){
+    fila = filon;
+    columna = columnon;
+}

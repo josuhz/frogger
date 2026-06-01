@@ -1,6 +1,7 @@
 #include "tableroNcurses.h"
 #include <ncurses.h>
 
+
 // Constructor del tablero.
 // Aqui se inicializa la pantalla en modo ncurses.
 TableroNcurses::TableroNcurses() {
@@ -8,11 +9,13 @@ TableroNcurses::TableroNcurses() {
     noecho();       // Evita que las teclas presionadas se impriman en pantalla.
     cbreak();       // Permite leer teclas inmediatamente, sin esperar ENTER.
     curs_set(0);    // Oculta el cursor de la terminal.
+    nodelay(stdscr, TRUE);   // Manin
 
     // Activa colores si la terminal los soporta.
     if (has_colors()) {
         start_color();
         init_pair(1, COLOR_GREEN, COLOR_BLACK); // Color para la rana.
+        init_pair(2, COLOR_RED, COLOR_BLACK);
     }
 }
 
@@ -99,6 +102,28 @@ void TableroNcurses::dibujarRana(int filaRana, int columnaRana) {
     refresh();
 }
 
+void TableroNcurses::dibujarCarro(int filaCarro, int columnaCarro) {
+    int filasTerminal;
+    int columnasTerminal;
+    getmaxyx(stdscr, filasTerminal, columnasTerminal);
+
+    // Si el tablero no cabe, no intentamos dibujar la rana.
+    if (!terminalTieneEspacio(filasTerminal, columnasTerminal)) {
+        return;
+    }
+
+    // Usa el mismo calculo de centrado que dibujar().
+    int inicioFila = 3;
+    int inicioColumna = (columnasTerminal - ANCHO_TABLERO) / 2;
+
+    // La rana se representa como '@' en color verde.
+    attron(COLOR_PAIR(2));
+    mvprintw(inicioFila + filaCarro, inicioColumna + columnaCarro, "=00=");
+    attroff(COLOR_PAIR(2));
+
+    refresh();
+}
+
 // Lee una tecla del usuario y la retorna.
 int TableroNcurses::leerTecla() {
     return getch(); // Devuelve el codigo de la tecla presionada.
@@ -113,4 +138,10 @@ void TableroNcurses::esperarTecla() {
 bool TableroNcurses::terminalTieneEspacio(int filasTerminal, int columnasTerminal) {
     return filasTerminal >= ALTO_TABLERO + MARGEN_VERTICAL &&
            columnasTerminal >= ANCHO_TABLERO + MARGEN_HORIZONTAL;
+}
+
+void TableroNcurses::perder(){
+    mvprintw(ALTO_TABLERO / 2, ANCHO_TABLERO +15, "QUE TOONTOOO C murio");
+    mvprintw(ALTO_TABLERO /2 +1, ANCHO_TABLERO +20, "Presione R para repetir por tonto");
+    refresh();
 }

@@ -1,5 +1,13 @@
 #include "tableroNcurses.h"
 #include "rana.h"
+#include "carro.h"
+#include <thread>
+#include <chrono>
+#include <ncurses.h>
+#include <iostream>
+#include "revisionEntradas.h"
+#include "movCarros.h"
+
 
 int main() {
     // Crea el objeto tablero.
@@ -13,28 +21,62 @@ int main() {
               TableroNcurses::ALTO_TABLERO,
               TableroNcurses::ANCHO_TABLERO);
 
+    
+
+    Carro carros[2] = {
+        Carro(TableroNcurses::ALTO_TABLERO /2,
+                TableroNcurses::ANCHO_TABLERO -5,
+                TableroNcurses::ALTO_TABLERO,
+                TableroNcurses::ANCHO_TABLERO,
+                2),
+
+        Carro(TableroNcurses::ALTO_TABLERO /2 +4,
+                TableroNcurses::ANCHO_TABLERO -5,
+                TableroNcurses::ALTO_TABLERO,
+                TableroNcurses::ANCHO_TABLERO,
+                3)
+    };
+    bool perdio = false;
     bool jugando = true;
     while (jugando) {
         // Dibuja el tablero y la rana en su posicion actual.
         tablero.dibujar();
-        tablero.dibujarRana(rana.obtenerFila(), rana.obtenerColumna());
 
-        int tecla = tablero.leerTecla();
+        if(manejarEntradas(rana, tablero) == 1){
+            jugando = false;
+        }
 
-        if (tecla == 'q' || tecla == 'Q') {
-            jugando = false; // Salir del juego si se presiona 'q' o 'Q'.
+        for(int i = 0; i<2;i++){
+            moverCarro(carros[i],tablero);
+            if(rana.obtenerFila() == carros[i].obtenerFila() && rana.obtenerColumna() <= carros[i].obtenerColumna() +4 &&
+            rana.obtenerColumna() >= carros[i].obtenerColumna() -1 ){
+                perdio = true;
+            }
         }
-        else if (tecla == 'w' || tecla == 'W') {
-            rana.moverArriba();
-        }
-        else if (tecla == 's' || tecla == 'S') {
-            rana.moverAbajo();
-        }
-        else if (tecla == 'a' || tecla == 'A') {
-            rana.moverIzquierda();
-        }
-        else if (tecla == 'd' || tecla == 'D') {
-            rana.moverDerecha();
+        
+
+            std::this_thread::sleep_for(
+        std::chrono::milliseconds(80)
+        );
+
+        if(perdio){
+            bool seguir = true;
+            while(seguir){
+                tablero.perder();
+                int tecla = tablero.leerTecla();
+                flushinp();
+                if(tecla == 'r' || tecla == 'R'){
+                    seguir = false;
+                    perdio = false;
+                    rana.teleportar(TableroNcurses::ALTO_TABLERO - 2,
+                        TableroNcurses::ANCHO_TABLERO / 2);
+                }
+                if(tecla == 'q' || tecla == 'Q'){
+                    seguir = false;
+                    perdio = false;
+                    jugando = false;
+                }
+            }
         }
 
     }
