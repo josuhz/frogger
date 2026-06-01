@@ -15,13 +15,13 @@ public:
     // Constructor: recibe la posicion inicial y el tamano del tablero.
     Carro(int filaInicial, int columnaInicial, int alto, int ancho, int velocidadjej);
     
-    // Devuelve la fila actual de la rana.
+    // Devuelve la fila actual del carro.
     int obtenerFila();
 
-    // Devuelve la columna actual de la rana.
+    // Devuelve la columna actual del carro.
     int obtenerColumna();
 
-    // Cambia la posicion de la rana sin dejar que cruce los bordes.
+    // Cambia la posicion del carro sin dejar que cruce los bordes.
     void moverArriba();
     void moverAbajo();
     void moverIzquierda(int cant);

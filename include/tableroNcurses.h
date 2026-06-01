@@ -1,5 +1,6 @@
 #ifndef TABLERO_NCURSES_H
 #define TABLERO_NCURSES_H
+#include <string>
 
 // Esta clase representa el tablero visual del juego usando ncurses.
 // Por ahora inicia ncurses, dibuja un tablero centrado y espera una tecla.
@@ -9,6 +10,11 @@ public:
     // La terminal puede ser mas grande, pero el tablero mantiene este tamano.
     static const int ALTO_TABLERO = 25;
     static const int ANCHO_TABLERO = 75;
+    int filasTerminal;
+    int columnasTerminal;
+    int inicioColumna;
+    static const int inicioFila = 3;
+    std::string mensajeNivel;
 
     // Espacio extra necesario para titulo y mensaje inferior.
     static const int MARGEN_VERTICAL = 5;
@@ -38,6 +44,14 @@ public:
     void esperarTecla();
 
     void perder();
+
+    void perderfinal();
+
+    void dibujarVida(int fila, int columna);
+
+    void dibujarAgua(int filamin, int filamax);
+
+    void setMensaje(const std::string& mensaje);
 
 private:
     // Revisa si la terminal tiene espacio suficiente para mostrar el tablero.

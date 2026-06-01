@@ -19,7 +19,9 @@ SRC = main.cpp \
       logica/rana.cpp \
 	  logica/carro.cpp \
 	  controlador/revisionEntradas.cpp \
-	  logica/movCarros.cpp
+	  logica/movCarros.cpp \
+	  controlador/cicloPrincipal.cpp \
+	  logica/agua.cpp
 
 # Convierte cada archivo .cpp en su respectivo .o.
 OBJ = $(SRC:.cpp=.o)

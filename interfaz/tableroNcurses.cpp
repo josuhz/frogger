@@ -1,5 +1,6 @@
 #include "tableroNcurses.h"
 #include <ncurses.h>
+#include <string>
 
 
 // Constructor del tablero.
@@ -16,6 +17,7 @@ TableroNcurses::TableroNcurses() {
         start_color();
         init_pair(1, COLOR_GREEN, COLOR_BLACK); // Color para la rana.
         init_pair(2, COLOR_RED, COLOR_BLACK);
+        init_pair(3, COLOR_WHITE, COLOR_CYAN);
     }
 }
 
@@ -28,12 +30,14 @@ TableroNcurses::~TableroNcurses() {
 // Dibuja el tablero inicial del juego.
 void TableroNcurses::dibujar() {
     clear();        // Limpia toda la pantalla.
-
+    getmaxyx(stdscr, filasTerminal, columnasTerminal);
+    inicioColumna = (columnasTerminal - ANCHO_TABLERO) / 2;
+    mvprintw(1, inicioColumna,mensajeNivel.c_str());
     // Obtiene el tamano actual de la terminal.
     // ncurses trabaja con filas y columnas de caracteres, no con pixeles.
-    int filasTerminal;
-    int columnasTerminal;
-    getmaxyx(stdscr, filasTerminal, columnasTerminal);
+    //int filasTerminal;
+    //int columnasTerminal;
+    //getmaxyx(stdscr, filasTerminal, columnasTerminal);
 
     // Si la terminal es muy pequena, no intentamos dibujar el tablero.
     if (!terminalTieneEspacio(filasTerminal, columnasTerminal)) {
@@ -44,11 +48,10 @@ void TableroNcurses::dibujar() {
     }
 
     // Calcula donde empieza el tablero para que quede centrado.
-    int inicioFila = 3;
-    int inicioColumna = (columnasTerminal - ANCHO_TABLERO) / 2;
+    //int inicioColumna = (columnasTerminal - ANCHO_TABLERO) / 2;
 
     // Escribe un titulo arriba del tablero.
-    mvprintw(1, inicioColumna, "FROGGER - Segunda Etapa");
+    //mvprintw(1, inicioColumna, "FROGGER - Segunda Etapa");
 
     // Este doble for recorre la matriz visual del tablero.
     for (int fila = inicioFila; fila < inicioFila + ALTO_TABLERO; fila++) {
@@ -75,15 +78,15 @@ void TableroNcurses::dibujar() {
     mvprintw(inicioFila + ALTO_TABLERO + 1, inicioColumna,
              "Presione cualquier tecla para salir...");
 
-    refresh();      // Actualiza la pantalla para mostrar lo dibujado.
+    // Actualiza la pantalla para mostrar lo dibujado.
 }
 
 // Dibuja la rana usando coordenadas logicas del tablero.
 // filaRana y columnaRana son posiciones dentro del tablero, no de la terminal.
 void TableroNcurses::dibujarRana(int filaRana, int columnaRana) {
-    int filasTerminal;
-    int columnasTerminal;
-    getmaxyx(stdscr, filasTerminal, columnasTerminal);
+    //int filasTerminal;
+    //int columnasTerminal;
+    //getmaxyx(stdscr, filasTerminal, columnasTerminal);
 
     // Si el tablero no cabe, no intentamos dibujar la rana.
     if (!terminalTieneEspacio(filasTerminal, columnasTerminal)) {
@@ -91,21 +94,18 @@ void TableroNcurses::dibujarRana(int filaRana, int columnaRana) {
     }
 
     // Usa el mismo calculo de centrado que dibujar().
-    int inicioFila = 3;
-    int inicioColumna = (columnasTerminal - ANCHO_TABLERO) / 2;
+    //int inicioColumna = (columnasTerminal - ANCHO_TABLERO) / 2;
 
     // La rana se representa como '@' en color verde.
     attron(COLOR_PAIR(1));
     mvaddch(inicioFila + filaRana, inicioColumna + columnaRana, '@');
     attroff(COLOR_PAIR(1));
-
-    refresh();
 }
 
 void TableroNcurses::dibujarCarro(int filaCarro, int columnaCarro) {
-    int filasTerminal;
-    int columnasTerminal;
-    getmaxyx(stdscr, filasTerminal, columnasTerminal);
+    //int filasTerminal;
+    //int columnasTerminal;
+    //getmaxyx(stdscr, filasTerminal, columnasTerminal);
 
     // Si el tablero no cabe, no intentamos dibujar la rana.
     if (!terminalTieneEspacio(filasTerminal, columnasTerminal)) {
@@ -113,15 +113,13 @@ void TableroNcurses::dibujarCarro(int filaCarro, int columnaCarro) {
     }
 
     // Usa el mismo calculo de centrado que dibujar().
-    int inicioFila = 3;
-    int inicioColumna = (columnasTerminal - ANCHO_TABLERO) / 2;
+    //int inicioColumna = (columnasTerminal - ANCHO_TABLERO) / 2;
 
     // La rana se representa como '@' en color verde.
     attron(COLOR_PAIR(2));
     mvprintw(inicioFila + filaCarro, inicioColumna + columnaCarro, "=00=");
     attroff(COLOR_PAIR(2));
 
-    refresh();
 }
 
 // Lee una tecla del usuario y la retorna.
@@ -141,7 +139,35 @@ bool TableroNcurses::terminalTieneEspacio(int filasTerminal, int columnasTermina
 }
 
 void TableroNcurses::perder(){
-    mvprintw(ALTO_TABLERO / 2, ANCHO_TABLERO +15, "QUE TOONTOOO C murio");
-    mvprintw(ALTO_TABLERO /2 +1, ANCHO_TABLERO +20, "Presione R para repetir por tonto");
+    mvprintw((ALTO_TABLERO /2) +3, inicioColumna + 12, "QUE TOONTOOO C murio");
+    mvprintw((ALTO_TABLERO /2) +4, inicioColumna + 7, "Presione R para repetir por tonto");
     refresh();
+}
+
+void TableroNcurses::perderfinal(){
+    mvprintw((ALTO_TABLERO /2) +3, inicioColumna + 12, "Que malo, ya murio pa siempre");
+    mvprintw((ALTO_TABLERO /2) +4, inicioColumna +7, "Presione Q para salir, mejor no juegue mas...");
+    refresh();
+}
+
+void TableroNcurses::dibujarVida(int fila, int columna){
+    attron(COLOR_PAIR(1));
+    mvprintw( fila +2, columna + inicioColumna, "@");
+    attroff(COLOR_PAIR(1));
+}
+
+void TableroNcurses::dibujarAgua(int filaMin, int filaMax){
+    attron(COLOR_PAIR(3));
+    for(int i = filaMin;i<=filaMax;i++){
+        mvhline(
+            inicioFila + i,
+            inicioColumna + 1,
+            '~',
+            ANCHO_TABLERO - 2);
+    }
+    attroff(COLOR_PAIR(3));
+}
+
+void TableroNcurses::setMensaje(const std::string& mensaje){
+    mensajeNivel = mensaje;
 }
