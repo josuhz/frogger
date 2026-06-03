@@ -25,6 +25,7 @@ public:
     void moverAbajo();
     void moverIzquierda();
     void moverDerecha();
+    void moverHorizontal(int cantidad);
     void teleportar(int filon, int columnon);
 
 };

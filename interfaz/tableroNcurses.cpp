@@ -11,6 +11,10 @@ TableroNcurses::TableroNcurses() {
     cbreak();       // Permite leer teclas inmediatamente, sin esperar ENTER.
     curs_set(0);    // Oculta el cursor de la terminal.
     nodelay(stdscr, TRUE);   // Manin
+    vidasMarcador = 0;
+    puntosMarcador = 0;
+    nivelMarcador = 1;
+    tiempoMarcador = 0;
 
     // Activa colores si la terminal los soporta.
     if (has_colors()) {
@@ -18,6 +22,12 @@ TableroNcurses::TableroNcurses() {
         init_pair(1, COLOR_GREEN, COLOR_BLACK); // Color para la rana.
         init_pair(2, COLOR_RED, COLOR_BLACK);
         init_pair(3, COLOR_WHITE, COLOR_CYAN);
+        init_pair(4, COLOR_BLACK, COLOR_GREEN); // Lily pad.
+        init_pair(5, COLOR_BLACK, COLOR_YELLOW); // Tronco.
+        init_pair(6, COLOR_BLACK, COLOR_GREEN); // Rana sobre lily pad.
+        init_pair(7, COLOR_BLACK, COLOR_YELLOW); // Rana sobre tronco.
+        init_pair(8, COLOR_BLACK, COLOR_WHITE); // Fila safe.
+        init_pair(9, COLOR_GREEN, COLOR_WHITE); // Rana sobre fila safe.
     }
 }
 
@@ -33,6 +43,7 @@ void TableroNcurses::dibujar() {
     getmaxyx(stdscr, filasTerminal, columnasTerminal);
     inicioColumna = (columnasTerminal - ANCHO_TABLERO) / 2;
     mvprintw(1, inicioColumna,mensajeNivel.c_str());
+    dibujarMarcador();
     // Obtiene el tamano actual de la terminal.
     // ncurses trabaja con filas y columnas de caracteres, no con pixeles.
     //int filasTerminal;
@@ -96,10 +107,29 @@ void TableroNcurses::dibujarRana(int filaRana, int columnaRana) {
     // Usa el mismo calculo de centrado que dibujar().
     //int inicioColumna = (columnasTerminal - ANCHO_TABLERO) / 2;
 
-    // La rana se representa como '@' en color verde.
-    attron(COLOR_PAIR(1));
+    dibujarRanaConFondo(filaRana, columnaRana, 0);
+}
+
+void TableroNcurses::dibujarRanaConFondo(int filaRana, int columnaRana, int tipoFondo) {
+    if (!terminalTieneEspacio(filasTerminal, columnasTerminal)) {
+        return;
+    }
+
+    int colorRana = 1;
+
+    if (tipoFondo == 1) {
+        colorRana = 9; // Sobre fila safe.
+    }
+    else if (tipoFondo == 2) {
+        colorRana = 6; // Sobre lily pad.
+    }
+    else if (tipoFondo == 3) {
+        colorRana = 7; // Sobre tronco.
+    }
+
+    attron(COLOR_PAIR(colorRana));
     mvaddch(inicioFila + filaRana, inicioColumna + columnaRana, '@');
-    attroff(COLOR_PAIR(1));
+    attroff(COLOR_PAIR(colorRana));
 }
 
 void TableroNcurses::dibujarCarro(int filaCarro, int columnaCarro) {
@@ -120,6 +150,43 @@ void TableroNcurses::dibujarCarro(int filaCarro, int columnaCarro) {
     mvprintw(inicioFila + filaCarro, inicioColumna + columnaCarro, "=00=");
     attroff(COLOR_PAIR(2));
 
+}
+
+void TableroNcurses::dibujarLilyPad(int fila, int columna, int ancho) {
+    if (!terminalTieneEspacio(filasTerminal, columnasTerminal)) {
+        return;
+    }
+
+    attron(COLOR_PAIR(4));
+    for (int i = 0; i < ancho; i++) {
+        mvaddch(inicioFila + fila, inicioColumna + columna + i, 'O');
+    }
+    attroff(COLOR_PAIR(4));
+}
+
+void TableroNcurses::dibujarTronco(int fila, int columna, int ancho) {
+    if (!terminalTieneEspacio(filasTerminal, columnasTerminal)) {
+        return;
+    }
+
+    attron(COLOR_PAIR(5));
+    for (int i = 0; i < ancho; i++) {
+        int columnaActual = columna + i;
+        if (columnaActual > 0 && columnaActual < ANCHO_TABLERO - 1) {
+            mvaddch(inicioFila + fila, inicioColumna + columnaActual, '=');
+        }
+    }
+    attroff(COLOR_PAIR(5));
+}
+
+void TableroNcurses::dibujarFilaSafe(int fila) {
+    if (!terminalTieneEspacio(filasTerminal, columnasTerminal)) {
+        return;
+    }
+
+    attron(COLOR_PAIR(8));
+    mvhline(inicioFila + fila, inicioColumna + 1, ' ', ANCHO_TABLERO - 2);
+    attroff(COLOR_PAIR(8));
 }
 
 // Lee una tecla del usuario y la retorna.
@@ -170,4 +237,20 @@ void TableroNcurses::dibujarAgua(int filaMin, int filaMax){
 
 void TableroNcurses::setMensaje(const std::string& mensaje){
     mensajeNivel = mensaje;
+}
+
+void TableroNcurses::setMarcador(int vidas, int puntos, int nivel, int tiempo) {
+    vidasMarcador = vidas;
+    puntosMarcador = puntos;
+    nivelMarcador = nivel;
+    tiempoMarcador = tiempo;
+}
+
+void TableroNcurses::dibujarMarcador() {
+    mvprintw(2, inicioColumna,
+             "Vidas: %d  Puntos: %d  Nivel: %d  Tiempo: %d",
+             vidasMarcador, 
+             puntosMarcador, 
+             nivelMarcador, 
+             tiempoMarcador);
 }

@@ -3,9 +3,15 @@
 #include "carro.h"
 #include "tableroNcurses.h"
 #include "agua.h"
+#include "estadoPartida.h"
+#include "lilyPad.h"
+#include "tronco.h"
 
-int nivel1(int vidas, TableroNcurses& tablero);
-int nivel2(int vidas, TableroNcurses& tablero);
-int ciclo(TableroNcurses& tablero, Rana& rana, Carro carros[], int cantidad, int vidas, Agua aguas[], int cantAgua);
+void nivel1(EstadoPartida& estado, TableroNcurses& tablero);
+void nivel2(EstadoPartida& estado, TableroNcurses& tablero);
+void ciclo(TableroNcurses& tablero, Rana& rana, Carro carros[],
+           int cantidad, EstadoPartida& estado, Agua aguas[], int cantAgua,
+           LilyPad lilyPads[], int cantLilyPads, Tronco troncos[], int cantTroncos,
+           int filaSafe);
 
 #endif

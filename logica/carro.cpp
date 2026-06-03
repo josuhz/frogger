@@ -23,7 +23,7 @@ void Carro::moverIzquierda(int cant) {
         columna -= cant;
 }
 void Carro::moverDerecha(int cant) {
-        columna ++;
+        columna += cant;
 }
 
 void Carro::teleportar(int ncolumna){

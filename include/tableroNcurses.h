@@ -13,6 +13,10 @@ public:
     int filasTerminal;
     int columnasTerminal;
     int inicioColumna;
+    int vidasMarcador;
+    int puntosMarcador;
+    int nivelMarcador;
+    int tiempoMarcador;
     static const int inicioFila = 3;
     std::string mensajeNivel;
 
@@ -33,9 +37,13 @@ public:
 
     // Dibuja la rana en una posicion dentro del tablero.
     void dibujarRana(int filaRana, int columnaRana);
+    void dibujarRanaConFondo(int filaRana, int columnaRana, int tipoFondo);
     
     // Dibuja el rano en una posición dentro del tablero
     void dibujarCarro(int filaCarro, int columnaCarro);
+    void dibujarLilyPad(int fila, int columna, int ancho);
+    void dibujarTronco(int fila, int columna, int ancho);
+    void dibujarFilaSafe(int fila);
 
     //lee tecla
     int leerTecla();
@@ -52,6 +60,10 @@ public:
     void dibujarAgua(int filamin, int filamax);
 
     void setMensaje(const std::string& mensaje);
+
+    void setMarcador(int vidas, int puntos, int nivel, int tiempo);
+
+    void dibujarMarcador();
 
 private:
     // Revisa si la terminal tiene espacio suficiente para mostrar el tablero.

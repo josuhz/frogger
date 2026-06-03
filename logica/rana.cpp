@@ -39,6 +39,18 @@ void Rana::moverDerecha() {
         columna++;
     }
 }
+
+void Rana::moverHorizontal(int cantidad){
+    columna += cantidad;
+
+    if (columna < 1) {
+        columna = 1;
+    }
+    if (columna > anchoTablero - 2) {
+        columna = anchoTablero - 2;
+    }
+}
+
 void Rana::teleportar(int filon, int columnon){
     fila = filon;
     columna = columnon;

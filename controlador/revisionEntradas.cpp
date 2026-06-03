@@ -24,7 +24,6 @@ int manejarEntradas(Rana& rana, TableroNcurses& tablero){
         else if (tecla == 'd' || tecla == 'D') {
             rana.moverDerecha();
         }
-        tablero.dibujarRana(rana.obtenerFila(), rana.obtenerColumna());
         return 0;
 
 }
