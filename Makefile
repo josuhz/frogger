@@ -5,7 +5,7 @@ CXX = g++
 # -std=c++17 usa el estandar C++17.
 # -Wall -Wextra muestran advertencias utiles.
 # -Iinclude le dice al compilador que busque headers en la carpeta include.
-CXXFLAGS = -std=c++17 -Wall -Wextra -Iinclude -IC:/msys64/ucrt64/include/ncursesw
+CXXFLAGS = -std=c++17 -Wall -Wextra -O2 -Iinclude -IC:/msys64/ucrt64/include/ncursesw
 
 # Libreria que necesitamos para ncurses.
 LDLIBS = -lncursesw

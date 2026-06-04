@@ -1,6 +1,7 @@
 #ifndef TABLERO_NCURSES_H
 #define TABLERO_NCURSES_H
 #include <string>
+#include "jugador.h"
 
 // Esta clase representa el tablero visual del juego usando ncurses.
 // Por ahora inicia ncurses, dibuja un tablero centrado y espera una tecla.
@@ -65,6 +66,10 @@ public:
 
     void dibujarMarcador();
 
+
+    void dibujarTitulo(Jugador jugador);
+
+    std::string introducirNombre();
 private:
     // Revisa si la terminal tiene espacio suficiente para mostrar el tablero.
     bool terminalTieneEspacio(int filasTerminal, int columnasTerminal);

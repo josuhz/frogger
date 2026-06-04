@@ -10,10 +10,11 @@ private:
     int altoTablero;
     int anchoTablero;
     int velocidad;
+    bool direccion;
 
 public:
     // Constructor: recibe la posicion inicial y el tamano del tablero.
-    Carro(int filaInicial, int columnaInicial, int alto, int ancho, int velocidadjej);
+    Carro(int filaInicial, int columnaInicial, int alto, int ancho, int velocidadjej, bool dir);
     
     // Devuelve la fila actual del carro.
     int obtenerFila();
@@ -29,6 +30,9 @@ public:
     void teleportar(int ncolumna);
     
     int obtenerVelocidad();
+
+    bool obtenerDireccion();
+    
 
 };
 

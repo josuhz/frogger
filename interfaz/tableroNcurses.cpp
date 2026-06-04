@@ -1,12 +1,15 @@
 #include "tableroNcurses.h"
 #include <ncurses.h>
 #include <string>
+#include "jugador.h"
 
 
 // Constructor del tablero.
 // Aqui se inicializa la pantalla en modo ncurses.
 TableroNcurses::TableroNcurses() {
     initscr();      // Inicia ncurses y toma control de la terminal.
+    intrflush(stdscr, FALSE);
+    keypad(stdscr, TRUE);
     noecho();       // Evita que las teclas presionadas se impriman en pantalla.
     cbreak();       // Permite leer teclas inmediatamente, sin esperar ENTER.
     curs_set(0);    // Oculta el cursor de la terminal.
@@ -39,7 +42,7 @@ TableroNcurses::~TableroNcurses() {
 
 // Dibuja el tablero inicial del juego.
 void TableroNcurses::dibujar() {
-    clear();        // Limpia toda la pantalla.
+    erase();
     getmaxyx(stdscr, filasTerminal, columnasTerminal);
     inicioColumna = (columnasTerminal - ANCHO_TABLERO) / 2;
     mvprintw(1, inicioColumna,mensajeNivel.c_str());
@@ -78,16 +81,13 @@ void TableroNcurses::dibujar() {
             if (bordeSuperior || bordeInferior || bordeIzquierdo || bordeDerecho) {
                 mvaddch(fila, columna, '#');
             }
-            // Si no estamos en los bordes, dejamos espacio vacio.
-            else {
-                mvaddch(fila, columna, ' ');
-            }
+          
         }
     }
 
     // Mensaje temporal para salir del programa.
     mvprintw(inicioFila + ALTO_TABLERO + 1, inicioColumna,
-             "Presione cualquier tecla para salir...");
+             "Presione tecla Q para salir...");
 
     // Actualiza la pantalla para mostrar lo dibujado.
 }
@@ -208,13 +208,11 @@ bool TableroNcurses::terminalTieneEspacio(int filasTerminal, int columnasTermina
 void TableroNcurses::perder(){
     mvprintw((ALTO_TABLERO /2) +3, inicioColumna + 12, "QUE TOONTOOO C murio");
     mvprintw((ALTO_TABLERO /2) +4, inicioColumna + 7, "Presione R para repetir por tonto");
-    refresh();
 }
 
 void TableroNcurses::perderfinal(){
     mvprintw((ALTO_TABLERO /2) +3, inicioColumna + 12, "Que malo, ya murio pa siempre");
     mvprintw((ALTO_TABLERO /2) +4, inicioColumna +7, "Presione Q para salir, mejor no juegue mas...");
-    refresh();
 }
 
 void TableroNcurses::dibujarVida(int fila, int columna){
@@ -254,3 +252,41 @@ void TableroNcurses::dibujarMarcador() {
              nivelMarcador, 
              tiempoMarcador);
 }
+
+void TableroNcurses::dibujarTitulo(Jugador jugador){
+    attron(COLOR_PAIR(1));
+    mvprintw(4, inicioColumna + 1, " _____ _____ _____ _____ _____ _____ _____ _____ _____ _____ ____  _____ ");
+    mvprintw(5, inicioColumna + 1, "|   __| __  |     |   __|   __|   __| __  |   __|  _  |   | |    \\|     |");
+    mvprintw(6, inicioColumna + 1, "|   __|    -|  |  |  |  |  |  |   __|    -|   __|     | | | |  |  |  |  |");
+    mvprintw(7, inicioColumna + 1, "|__|  |__|__|_____|_____|_____|_____|__|__|_____|__|__|_|___|____/|_____|");
+    mvprintw(9, inicioColumna + 1, " _____ _____ ____  _____ ");
+    mvprintw(10, inicioColumna + 1, "|  _  |   | |    \\|     |");
+    mvprintw(11, inicioColumna + 1, "|     | | | |  |  |  |  |");
+    mvprintw(12,inicioColumna + 1, "|__|__|_|___|____/|_____|");
+    attroff(COLOR_PAIR(3));
+    mvprintw(14, inicioColumna + 4, "Presione E para empezar");
+    std::string mensaje = "Top 1: " + jugador.top1Name + ": " + std::to_string(jugador.top1); 
+    mvprintw(16, inicioColumna + 6, mensaje.c_str());
+    mensaje = "Top 2: " + jugador.top2Name + ": " + std::to_string(jugador.top2); 
+    mvprintw(18, inicioColumna + 6, mensaje.c_str());
+    mensaje = "Top 3: " + jugador.top3Name + ": " + std::to_string(jugador.top3);
+    mvprintw(20, inicioColumna + 6, mensaje.c_str());
+
+
+}
+
+std::string TableroNcurses::introducirNombre(){
+    mvprintw((ALTO_TABLERO/2) + 4, inicioColumna + 4, "Wow, entro en el top, esa no me la esperaba");
+    nodelay(stdscr, FALSE); 
+    mvprintw((ALTO_TABLERO/2) + 6, inicioColumna + 7, "Introduzca su nombre: ");
+
+    echo();
+    char buffer[4];
+    getnstr(buffer, 3);
+    noecho();
+    curs_set(0);
+    nodelay(stdscr, TRUE);
+    return buffer;
+}
+
+

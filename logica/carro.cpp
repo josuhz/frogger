@@ -1,11 +1,12 @@
 #include "carro.h"
 
-Carro::Carro(int filaInicial, int columnaInicial, int alto, int ancho, int velocidadjej) {
+Carro::Carro(int filaInicial, int columnaInicial, int alto, int ancho, int velocidadjej, bool dir) {
     fila = filaInicial;
     columna = columnaInicial;
     altoTablero = alto;
     anchoTablero = ancho;
     velocidad = velocidadjej;
+    direccion = dir;
 }
 
 
@@ -32,4 +33,8 @@ void Carro::teleportar(int ncolumna){
 
 int Carro::obtenerVelocidad(){
     return velocidad;
+}
+
+bool Carro::obtenerDireccion(){
+    return direccion;
 }
