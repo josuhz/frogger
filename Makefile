@@ -8,7 +8,7 @@ CXX = g++
 CXXFLAGS = -std=c++17 -Wall -Wextra -O2 -Iinclude -IC:/msys64/ucrt64/include/ncursesw
 
 # Libreria que necesitamos para ncurses.
-LDLIBS = -lncursesw
+LDLIBS = -lncursesw -lSDL2main -lSDL2 -lSDL2_mixer -Wl,-subsystem,console
 
 # Nombre del ejecutable final.
 TARGET = frogger.exe

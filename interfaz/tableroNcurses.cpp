@@ -92,6 +92,35 @@ void TableroNcurses::dibujar() {
     // Actualiza la pantalla para mostrar lo dibujado.
 }
 
+void TableroNcurses::dibujarTablero(){
+	mvprintw(1, inicioColumna,mensajeNivel.c_str());
+    dibujarMarcador();
+    for(int i = 3; i < 2 + ALTO_TABLERO; i++){
+			mvaddch(i, inicioColumna, '#');
+			mvaddch(i, inicioColumna + ANCHO_TABLERO, '#');
+		}
+	for (int i = inicioColumna; i< inicioColumna + ANCHO_TABLERO; i++){
+			mvaddch(3, i, '#');
+			mvaddch(2 + ALTO_TABLERO, i, '#'  );
+		}
+	//for (int fila = inicioFila; fila < inicioFila + ALTO_TABLERO; fila++) {
+    //    for (int columna = inicioColumna; columna < inicioColumna + ANCHO_TABLERO; columna++) {
+
+            // Estas variables indican si la celda actual pertenece a un borde.
+           // bool bordeSuperior = fila == inicioFila;
+            //bool bordeInferior = fila == inicioFila + ALTO_TABLERO - 1;
+            //bool bordeIzquierdo = columna == inicioColumna;
+            //bool bordeDerecho = columna == inicioColumna + ANCHO_TABLERO - 1;
+
+            // Si estamos en los bordes, dibujamos '#'.
+            //if (bordeSuperior || bordeInferior || bordeIzquierdo || bordeDerecho) {
+              //  mvaddch(fila, columna, '#');
+            //}
+          
+        //}
+    //}
+}
+
 // Dibuja la rana usando coordenadas logicas del tablero.
 // filaRana y columnaRana son posiciones dentro del tablero, no de la terminal.
 void TableroNcurses::dibujarRana(int filaRana, int columnaRana) {
@@ -206,13 +235,13 @@ bool TableroNcurses::terminalTieneEspacio(int filasTerminal, int columnasTermina
 }
 
 void TableroNcurses::perder(){
-    mvprintw((ALTO_TABLERO /2) +3, inicioColumna + 12, "QUE TOONTOOO C murio");
-    mvprintw((ALTO_TABLERO /2) +4, inicioColumna + 7, "Presione R para repetir por tonto");
+    mvprintw((ALTO_TABLERO /2) +3, inicioColumna + 12, "Oh no, Moriste que pena!!");
+    mvprintw((ALTO_TABLERO /2) +4, inicioColumna + 7, "No pasa nada, presiona R para volver a intentarlo amigo");
 }
 
 void TableroNcurses::perderfinal(){
-    mvprintw((ALTO_TABLERO /2) +3, inicioColumna + 12, "Que malo, ya murio pa siempre");
-    mvprintw((ALTO_TABLERO /2) +4, inicioColumna +7, "Presione Q para salir, mejor no juegue mas...");
+    mvprintw((ALTO_TABLERO /2) +3, inicioColumna + 12, "Vaya, te quedaste sin vidas, recorcholis");
+    mvprintw((ALTO_TABLERO /2) +4, inicioColumna +7, "Presiona Q para salir, e intentalo de nuevo si quieres");
 }
 
 void TableroNcurses::dibujarVida(int fila, int columna){
@@ -276,9 +305,9 @@ void TableroNcurses::dibujarTitulo(Jugador jugador){
 }
 
 std::string TableroNcurses::introducirNombre(){
-    mvprintw((ALTO_TABLERO/2) + 4, inicioColumna + 4, "Wow, entro en el top, esa no me la esperaba");
+    mvprintw((ALTO_TABLERO/2) + 4, inicioColumna + 4, "Wow, entraste en el top, felicidades!!!");
     nodelay(stdscr, FALSE); 
-    mvprintw((ALTO_TABLERO/2) + 6, inicioColumna + 7, "Introduzca su nombre: ");
+    mvprintw((ALTO_TABLERO/2) + 6, inicioColumna + 7, "Introduce tu nombre: ");
 
     echo();
     char buffer[4];

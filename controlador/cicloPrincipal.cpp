@@ -12,6 +12,8 @@
 #include "lilyPad.h"
 #include "tronco.h"
 #include <string>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 
 void ciclo(TableroNcurses& tablero, Rana& rana, Carro carros[],
            int cantidad, EstadoPartida& estado, Agua aguas[], int cantAgua,
@@ -19,11 +21,17 @@ void ciclo(TableroNcurses& tablero, Rana& rana, Carro carros[],
            int filaSafe){
     bool perdio = false;
     bool jugando = true;
+    Mix_Chunk* soncarro = Mix_LoadWAV("include/carro.wav");
+    Mix_Chunk* sonawa = Mix_LoadWAV("include/awa.wav");
+    Mix_Chunk* sonido = Mix_LoadWAV("include/jump.wav");
+    int canal = Mix_PlayChannel(-1, sonido, 0);  
+	Mix_Volume(canal, 64);
 
     // Guarda el momento en que inicia el contador del tiempo.
     auto ultimoSegundo = std::chrono::steady_clock::now();
 
     while (jugando) {
+		erase();
         bool estaEnAgua = false;
         bool estaSobreLily = false;
         bool estaSobreTronco = false;
@@ -31,13 +39,15 @@ void ciclo(TableroNcurses& tablero, Rana& rana, Carro carros[],
 
         // Dibuja el tablero, marcador y la rana en su posicion actual.
         tablero.setMarcador(estado.vidas, estado.puntos, estado.nivel, estado.tiempo);
-        tablero.dibujar();
-
-        if(manejarEntradas(rana, tablero) == 1){
+        //tablero.dibujar();
+		int movio = manejarEntradas(rana, tablero);
+        if(movio == 1){
             jugando = false;
             estado.vidas = -1;
             return;
-        }
+        }else if(movio == 2){
+			Mix_PlayChannel(-1, sonido, 0);
+			}
 
         for(int i = 0; i<cantAgua;i++){
             tablero.dibujarAgua(aguas[i].obtenerXmin(),aguas[i].obtenerXmax());
@@ -84,12 +94,14 @@ void ciclo(TableroNcurses& tablero, Rana& rana, Carro carros[],
             moverCarro(carros[i],tablero);
             if(rana.obtenerFila() == carros[i].obtenerFila() && rana.obtenerColumna() <= carros[i].obtenerColumna() +4 &&
             rana.obtenerColumna() >= carros[i].obtenerColumna() -1 ){
-                perdio = true;
+                perdio = true; 
+				Mix_PlayChannel(-1, soncarro, 0);
             }
         }
 
         if(estaEnAgua && !estaSobreLily && !estaSobreTronco){
             perdio = true;
+			Mix_PlayChannel(-1, sonawa, 0);
         }
 
         if(estaSobreTronco){
@@ -104,11 +116,11 @@ void ciclo(TableroNcurses& tablero, Rana& rana, Carro carros[],
         else{
             tablero.dibujarRana(rana.obtenerFila(), rana.obtenerColumna());
         }
-
+		tablero.dibujarTablero();
         refresh();
 
         std::this_thread::sleep_for(
-    std::chrono::milliseconds(60)
+    std::chrono::milliseconds(65)
         );
         auto ahora = std::chrono::steady_clock::now();
 
@@ -150,6 +162,8 @@ void ciclo(TableroNcurses& tablero, Rana& rana, Carro carros[],
                         perdio = false;
                         jugando = false;
                         estado.vidas = -1;
+                        erase();
+                        return;
                     }
                 }
                 else{
@@ -161,6 +175,8 @@ void ciclo(TableroNcurses& tablero, Rana& rana, Carro carros[],
                         seguir = false;
                         perdio = false;
                         jugando = false;
+                        erase();
+                        return;
                     }
                 }
             }
@@ -546,7 +562,7 @@ void nivel4(EstadoPartida& estado, TableroNcurses& tablero){
 void nivel5(EstadoPartida& estado, TableroNcurses& tablero, int vel){
     estado.nivel = 4;
     estado.tiempo = 60;
-    tablero.setMensaje("FROGGER: nivel 4");
+    tablero.setMensaje("FROGGER: nivel 5");
     Agua aguas[2] = {
         Agua(7,7),
         Agua(14,14)

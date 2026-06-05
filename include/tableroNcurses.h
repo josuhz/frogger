@@ -70,6 +70,8 @@ public:
     void dibujarTitulo(Jugador jugador);
 
     std::string introducirNombre();
+    
+    void dibujarTablero();
 private:
     // Revisa si la terminal tiene espacio suficiente para mostrar el tablero.
     bool terminalTieneEspacio(int filasTerminal, int columnasTerminal);

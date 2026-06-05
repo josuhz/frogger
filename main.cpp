@@ -11,7 +11,9 @@
 #include "estadoPartida.h"
 #include <string>
 #include "jugador.h"
-
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
+#undef main
 
 int main() {
     Jugador jugador;
@@ -24,7 +26,6 @@ int main() {
     TableroNcurses tablero;
 
     while(true){
-
         EstadoPartida estado;
         estado.vidas = 5;
         estado.puntos = 0;
@@ -37,6 +38,10 @@ int main() {
         tablero.dibujar();
         tablero.dibujarTitulo(jugador);
         nodelay(stdscr, FALSE); 
+		SDL_Init(SDL_INIT_AUDIO);
+		Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
+		Mix_Music* musica = Mix_LoadMUS("include/menu.wav");
+		Mix_PlayMusic(musica, -1);
         while (!jugar){
             int tecla = tablero.leerTecla();
             flushinp();
@@ -48,8 +53,11 @@ int main() {
                 jugar = true;
             }
         }
+        Mix_FreeMusic(musica);
+        Mix_Music* musical = Mix_LoadMUS("include/juego.wav");
+        Mix_PlayMusic(musical, -1);
+        
         nodelay(stdscr, TRUE); 
-
         if(estado.vidas >= 0){
             nivel1(estado, tablero);
             if(estado.vidas >= 0) {
@@ -95,7 +103,7 @@ int main() {
   
         //mvprintw(1, 12, tablero.introducirNombre());
         }
-
+		Mix_FreeMusic(musical);
     }
     // Cuando main termina, se destruye el objeto tablero.
     // Eso llama automaticamente al destructor y cierra ncurses.
