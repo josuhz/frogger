@@ -26,11 +26,6 @@ int Tronco::obtenerDireccion() {
     return direccion;
 }
 
-bool Tronco::contiene(int filaRana, int columnaRana) {
-    return filaRana == fila &&
-           columnaRana >= columna &&
-           columnaRana < columna + ancho;
-}
 
 int Tronco::mover() {
     int desplazamiento = direccion * velocidad;

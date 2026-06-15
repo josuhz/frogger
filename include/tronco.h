@@ -19,8 +19,6 @@ public:
     int obtenerColumna();
     int obtenerAncho();
     int obtenerDireccion();
-
-    bool contiene(int filaRana, int columnaRana);
     int mover();
 };
 
