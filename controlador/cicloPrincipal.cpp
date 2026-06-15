@@ -15,9 +15,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 
-extern "C" bool contiene(int filaRana, int columnaRana,
-                          int fila, int columna, int ancho);
-
 void ciclo(TableroNcurses& tablero, Rana& rana, Carro carros[],
            int cantidad, EstadoPartida& estado, Agua aguas[], int cantAgua,
            LilyPad lilyPads[], int cantLilyPads, Tronco troncos[], int cantTroncos,
@@ -69,29 +66,28 @@ void ciclo(TableroNcurses& tablero, Rana& rana, Carro carros[],
             estaEnSafe = filaRana == filaSafe;
         }
         for(int i = 0; i<cantLilyPads;i++){
-            int fila = lilyPads[i].obtenerFila();
-            int columna = lilyPads[i].obtenerColumna();
-            int ancho = lilyPads[i].obtenerAncho();
-            tablero.dibujarLilyPad(fila, columna, ancho);
+            tablero.dibujarLilyPad(lilyPads[i].obtenerFila(),
+                                   lilyPads[i].obtenerColumna(),
+                                   lilyPads[i].obtenerAncho());
             ///el contener se puede ensambladear
-            if(contiene(filaRana, columnaRana, fila, columna, ancho)){
+            if(lilyPads[i].contiene(filaRana, columnaRana)){
                 estaSobreLily = true;
             }
         }
 
         for(int i = 0; i<cantTroncos;i++){
             ///el contener se puede ensambladear
+            bool ranaIbaEnEsteTronco = troncos[i].contiene(filaRana, columnaRana);
             int desplazamiento = troncos[i].mover();
-            int fila = troncos[i].obtenerFila();
-            int columna = troncos[i].obtenerColumna();
-            int ancho = troncos[i].obtenerAncho();
-            tablero.dibujarTronco(fila, columna, ancho);
-            if(contiene(filaRana, columnaRana, fila, columna, ancho + 1)){
+
+            if(ranaIbaEnEsteTronco){
                 rana.moverHorizontal(desplazamiento);
                 estaSobreTronco = true;
-             }
-        
-            
+            }
+
+            tablero.dibujarTronco(troncos[i].obtenerFila(),
+                                  troncos[i].obtenerColumna(),
+                                  troncos[i].obtenerAncho());
         }
 
         for(int i = 0; i<cantidad;i++){
@@ -100,9 +96,8 @@ void ciclo(TableroNcurses& tablero, Rana& rana, Carro carros[],
             //enviar al gas los numeros
             ///el ensamblador chekea todas esas kosas
             ///retorna true si muere false si no
-            //if(filaRana == carros[i].obtenerFila() && columnaRana <= carros[i].obtenerColumna() +4 &&
-            //columnaRana >= carros[i].obtenerColumna() -1 ){
-            if(contiene(filaRana, columnaRana, carros[i].obtenerFila(), carros[i].obtenerColumna(), 5)){
+            if(filaRana == carros[i].obtenerFila() && columnaRana <= carros[i].obtenerColumna() +4 &&
+            columnaRana >= carros[i].obtenerColumna() -1 ){
                 perdio = true; 
 				Mix_PlayChannel(-1, soncarro, 0);
             }
