@@ -19,6 +19,7 @@ int LilyPad::obtenerAncho() {
 }
 
 bool LilyPad::contiene(int filaRana, int columnaRana) {
+    ///se puede hacer un gas ahí miedo
     return filaRana == fila &&
            columnaRana >= columna &&
            columnaRana < columna + ancho;

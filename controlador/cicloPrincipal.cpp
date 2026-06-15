@@ -47,36 +47,42 @@ void ciclo(TableroNcurses& tablero, Rana& rana, Carro carros[],
             return;
         }else if(movio == 2){
 			Mix_PlayChannel(-1, sonido, 0);
-			}
-
+		}
+        int filaRana = rana.obtenerFila();
+        int columnaRana = rana.obtenerColumna();
         for(int i = 0; i<cantAgua;i++){
-            tablero.dibujarAgua(aguas[i].obtenerXmin(),aguas[i].obtenerXmax());
-            if(rana.obtenerFila() >= aguas[i].obtenerXmin() && rana.obtenerFila() <= aguas[i].obtenerXmax()){
+            int xmin = aguas[i].obtenerXmin();
+            int xmax = aguas[i].obtenerXmax();
+            tablero.dibujarAgua(xmin,xmax);
+            ///ensamblador chekea las kosas
+            ///retorna true si muere, false si falla
+            if(filaRana >= xmin && filaRana <= xmax){
                 estaEnAgua = true;
             }
         }
 
         if(filaSafe >= 0){
             tablero.dibujarFilaSafe(filaSafe);
-            estaEnSafe = rana.obtenerFila() == filaSafe;
+            estaEnSafe = filaRana == filaSafe;
         }
-
         for(int i = 0; i<cantLilyPads;i++){
             tablero.dibujarLilyPad(lilyPads[i].obtenerFila(),
                                    lilyPads[i].obtenerColumna(),
                                    lilyPads[i].obtenerAncho());
-
-            if(lilyPads[i].contiene(rana.obtenerFila(), rana.obtenerColumna())){
+            ///el contener se puede ensambladear
+            if(lilyPads[i].contiene(filaRana, columnaRana)){
                 estaSobreLily = true;
             }
         }
 
         for(int i = 0; i<cantTroncos;i++){
-            bool ranaIbaEnEsteTronco = troncos[i].contiene(rana.obtenerFila(), rana.obtenerColumna());
+            ///el contener se puede ensambladear
+            bool ranaIbaEnEsteTronco = troncos[i].contiene(filaRana, columnaRana);
             int desplazamiento = troncos[i].mover();
 
             if(ranaIbaEnEsteTronco){
                 rana.moverHorizontal(desplazamiento);
+                estaSobreTronco = true;
             }
 
             tablero.dibujarTronco(troncos[i].obtenerFila(),
@@ -84,16 +90,14 @@ void ciclo(TableroNcurses& tablero, Rana& rana, Carro carros[],
                                   troncos[i].obtenerAncho());
         }
 
-        for(int i = 0; i<cantTroncos;i++){
-            if(troncos[i].contiene(rana.obtenerFila(), rana.obtenerColumna())){
-                estaSobreTronco = true;
-            }
-        }
-
         for(int i = 0; i<cantidad;i++){
             moverCarro(carros[i],tablero);
-            if(rana.obtenerFila() == carros[i].obtenerFila() && rana.obtenerColumna() <= carros[i].obtenerColumna() +4 &&
-            rana.obtenerColumna() >= carros[i].obtenerColumna() -1 ){
+            ///hacer los obtener
+            //enviar al gas los numeros
+            ///el ensamblador chekea todas esas kosas
+            ///retorna true si muere false si no
+            if(filaRana == carros[i].obtenerFila() && columnaRana <= carros[i].obtenerColumna() +4 &&
+            columnaRana >= carros[i].obtenerColumna() -1 ){
                 perdio = true; 
 				Mix_PlayChannel(-1, soncarro, 0);
             }
