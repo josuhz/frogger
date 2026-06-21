@@ -18,8 +18,3 @@ int LilyPad::obtenerAncho() {
     return ancho;
 }
 
-bool LilyPad::contiene(int filaRana, int columnaRana) {
-    return filaRana == fila &&
-           columnaRana >= columna &&
-           columnaRana < columna + ancho;
-}

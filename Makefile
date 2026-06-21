@@ -1,48 +1,82 @@
-# Compilador que vamos a usar.
-CXX = g++
+# Compiler
+CXX ?= g++
+CROSS_COMPILE ?=
 
-# Opciones de compilacion:
-# -std=c++17 usa el estandar C++17.
-# -Wall -Wextra muestran advertencias utiles.
-# -Iinclude le dice al compilador que busque headers en la carpeta include.
-CXXFLAGS = -std=c++17 -Wall -Wextra -O2 -Iinclude -IC:/msys64/ucrt64/include/ncursesw
+# Target architecture:
+#   make              -> native build
+#   make pi4-a32     -> Raspberry Pi 4 AArch32 build
+TARGET_ARCH ?= native
 
-# Libreria que necesitamos para ncurses.
-LDLIBS = -lncursesw -lSDL2main -lSDL2 -lSDL2_mixer -Wl,-subsystem,console
+ifeq ($(TARGET_ARCH),pi4-a32)
+CXX := $(if $(CROSS_COMPILE),$(CROSS_COMPILE)g++,g++)
+ARCH_CXXFLAGS := -march=armv8-a+crc -mtune=cortex-a72 -mfpu=neon-fp-armv8 -mfloat-abi=hard
+else
+ARCH_CXXFLAGS :=
+endif
 
-# Nombre del ejecutable final.
-TARGET = frogger.exe
+# Build options
+CPPFLAGS += -Iinclude
+CXXFLAGS += -std=c++17 -Wall -Wextra -O2 $(ARCH_CXXFLAGS)
 
-# Archivos fuente del proyecto.
+# Libraries. pkg-config is preferred on Raspberry Pi OS, with a simple fallback.
+PKG_CONFIG ?= pkg-config
+PKG_DEPS := ncursesw sdl2 SDL2_mixer
+PKG_CFLAGS := $(shell $(PKG_CONFIG) --cflags $(PKG_DEPS) 2>/dev/null)
+PKG_LIBS := $(shell $(PKG_CONFIG) --libs $(PKG_DEPS) 2>/dev/null)
+
+CPPFLAGS += $(PKG_CFLAGS)
+LDLIBS := $(if $(strip $(PKG_LIBS)),$(PKG_LIBS),-lncursesw -lSDL2 -lSDL2_mixer)
+
+# Executable name
+TARGET = frogger
+
+# Source files
 SRC = main.cpp \
       interfaz/tableroNcurses.cpp \
       logica/rana.cpp \
-	  logica/carro.cpp \
-	  controlador/revisionEntradas.cpp \
-	  logica/movCarros.cpp \
-	  controlador/cicloPrincipal.cpp \
-	  logica/agua.cpp \
-	  logica/lilyPad.cpp \
-	  logica/tronco.cpp
+      logica/carro.cpp \
+      controlador/revisionEntradas.cpp \
+      logica/movCarros.cpp \
+      controlador/cicloPrincipal.cpp \
+      logica/agua.cpp \
+      logica/lilyPad.cpp \
+      logica/tronco.cpp
 
-# Convierte cada archivo .cpp en su respectivo .o.
-OBJ = $(SRC:.cpp=.o)
+BUILD_DIR = build/$(TARGET_ARCH)
+OBJ = $(SRC:%.cpp=$(BUILD_DIR)/%.o)
+DEP = $(OBJ:.o=.d)
+LEGACY_OBJ = $(SRC:.cpp=.o)
+ASM_SRC = include/contiene.s
+ASM_OBJ = $(ASM_SRC:%.s=$(BUILD_DIR)/%.o)
 
-# Regla principal: compila todo el proyecto.
+.PHONY: all pi4-a32 run clean
+
+# Main rule
 all: $(TARGET)
 
-# Regla para crear el ejecutable final usando los archivos objeto.
-$(TARGET): $(OBJ)
-	$(CXX) $(OBJ) -o $(TARGET) $(LDLIBS)
+# Raspberry Pi 4, 32-bit ARM/AArch32
+pi4-a32:
+	$(MAKE) TARGET_ARCH=pi4-a32
 
-# Regla general para convertir un .cpp en un .o.
-%.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+# Link
+$(TARGET): $(OBJ) $(ASM_OBJ)
+	$(CXX) $(CXXFLAGS) $(OBJ) $(ASM_OBJ) -o $(TARGET) $(LDLIBS)
 
-# Compila y ejecuta el juego.
+# Compile
+$(BUILD_DIR)/%.o: %.s
+	mkdir -p $(dir $@)
+	$(AS) -o $@ $<
+
+$(BUILD_DIR)/%.o: %.cpp
+	mkdir -p $(dir $@)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -MMD -MP -c $< -o $@
+
+# Run
 run: $(TARGET)
 	./$(TARGET)
 
-# Borra archivos generados por la compilacion.
+# Clean
 clean:
-	rm -f $(OBJ) $(TARGET)
+	rm -rf build $(TARGET) $(LEGACY_OBJ) $(ASM_OBJ)
+
+-include $(DEP)

@@ -14,8 +14,6 @@ public:
     int obtenerFila();
     int obtenerColumna();
     int obtenerAncho();
-
-    bool contiene(int filaRana, int columnaRana);
 };
 
 #endif

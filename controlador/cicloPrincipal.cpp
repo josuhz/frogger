@@ -15,6 +15,9 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 
+extern "C" bool contiene(int filaRana, int columnaRana,
+                          int fila, int columna, int ancho);
+
 void ciclo(TableroNcurses& tablero, Rana& rana, Carro carros[],
            int cantidad, EstadoPartida& estado, Agua aguas[], int cantAgua,
            LilyPad lilyPads[], int cantLilyPads, Tronco troncos[], int cantTroncos,
@@ -47,53 +50,59 @@ void ciclo(TableroNcurses& tablero, Rana& rana, Carro carros[],
             return;
         }else if(movio == 2){
 			Mix_PlayChannel(-1, sonido, 0);
-			}
-
+		}
+        int filaRana = rana.obtenerFila();
+        int columnaRana = rana.obtenerColumna();
         for(int i = 0; i<cantAgua;i++){
-            tablero.dibujarAgua(aguas[i].obtenerXmin(),aguas[i].obtenerXmax());
-            if(rana.obtenerFila() >= aguas[i].obtenerXmin() && rana.obtenerFila() <= aguas[i].obtenerXmax()){
+            int xmin = aguas[i].obtenerXmin();
+            int xmax = aguas[i].obtenerXmax();
+            tablero.dibujarAgua(xmin,xmax);
+            ///ensamblador chekea las kosas
+            ///retorna true si muere, false si falla
+            if(filaRana >= xmin && filaRana <= xmax){
                 estaEnAgua = true;
             }
         }
 
         if(filaSafe >= 0){
             tablero.dibujarFilaSafe(filaSafe);
-            estaEnSafe = rana.obtenerFila() == filaSafe;
+            estaEnSafe = filaRana == filaSafe;
         }
-
         for(int i = 0; i<cantLilyPads;i++){
-            tablero.dibujarLilyPad(lilyPads[i].obtenerFila(),
-                                   lilyPads[i].obtenerColumna(),
-                                   lilyPads[i].obtenerAncho());
-
-            if(lilyPads[i].contiene(rana.obtenerFila(), rana.obtenerColumna())){
+            int fila = lilyPads[i].obtenerFila();
+            int columna = lilyPads[i].obtenerColumna();
+            int ancho = lilyPads[i].obtenerAncho();
+            tablero.dibujarLilyPad(fila, columna, ancho);
+            ///el contener se puede ensambladear
+            if(contiene(filaRana, columnaRana, fila, columna, ancho)){
                 estaSobreLily = true;
             }
         }
 
         for(int i = 0; i<cantTroncos;i++){
-            bool ranaIbaEnEsteTronco = troncos[i].contiene(rana.obtenerFila(), rana.obtenerColumna());
+            ///el contener se puede ensambladear
             int desplazamiento = troncos[i].mover();
-
-            if(ranaIbaEnEsteTronco){
+            int fila = troncos[i].obtenerFila();
+            int columna = troncos[i].obtenerColumna();
+            int ancho = troncos[i].obtenerAncho();
+            tablero.dibujarTronco(fila, columna, ancho);
+            if(contiene(filaRana, columnaRana, fila, columna, ancho + 1)){
                 rana.moverHorizontal(desplazamiento);
-            }
-
-            tablero.dibujarTronco(troncos[i].obtenerFila(),
-                                  troncos[i].obtenerColumna(),
-                                  troncos[i].obtenerAncho());
-        }
-
-        for(int i = 0; i<cantTroncos;i++){
-            if(troncos[i].contiene(rana.obtenerFila(), rana.obtenerColumna())){
                 estaSobreTronco = true;
-            }
+             }
+        
+            
         }
 
         for(int i = 0; i<cantidad;i++){
             moverCarro(carros[i],tablero);
-            if(rana.obtenerFila() == carros[i].obtenerFila() && rana.obtenerColumna() <= carros[i].obtenerColumna() +4 &&
-            rana.obtenerColumna() >= carros[i].obtenerColumna() -1 ){
+            ///hacer los obtener
+            //enviar al gas los numeros
+            ///el ensamblador chekea todas esas kosas
+            ///retorna true si muere false si no
+            //if(filaRana == carros[i].obtenerFila() && columnaRana <= carros[i].obtenerColumna() +4 &&
+            //columnaRana >= carros[i].obtenerColumna() -1 ){
+            if(contiene(filaRana, columnaRana, carros[i].obtenerFila(), carros[i].obtenerColumna(), 5)){
                 perdio = true; 
 				Mix_PlayChannel(-1, soncarro, 0);
             }
