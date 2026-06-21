@@ -106,12 +106,7 @@ void ciclo(TableroNcurses& tablero, Rana& rana, Carro carros[],
         
             
 =======
-            }
-
-            tablero.dibujarTronco(troncos[i].obtenerFila(),
-                                  troncos[i].obtenerColumna(),
-                                  troncos[i].obtenerAncho());
->>>>>>> 5aea73914d351d0b4fb86476df9925ecbb2fc952
+            }>>>>>>> 5aea73914d351d0b4fb86476df9925ecbb2fc952
         }
 
         for(int i = 0; i<cantidad;i++){
