@@ -1,0 +1,20 @@
+Ciclos: 1000000 
+Tiempo promedio: 3078896 ns
+Ciclos: 1000000 
+Tiempo promedio: 3441834 ns
+Ciclos de revision de Lilypads 15000000
+Tiempo promedio de colision con Lilypads 1808ns
+Ciclos de revision de Troncos 8000000
+Tiempo promedio de colision con Troncos 1829ns
+Ciclos de revision de Carros 8000000
+Tiempo promedio de colision con Carros 1854ns
+Ciclos: 1000000 
+Tiempo promedio: 1383521 ns
+Ciclos de revision de Lilypads 15000000
+Tiempo promedio de colision con Lilypads 1765ns
+Ciclos de revision de Troncos 8000000
+Tiempo promedio de colision con Troncos 1821ns
+Ciclos de revision de Carros 8000000
+Tiempo promedio de colision con Carros 1826ns
+Promedio final: 1.38352e+06ns
+Desviacion estandar: 369130ns

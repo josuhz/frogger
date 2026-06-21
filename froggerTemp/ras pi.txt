@@ -1,0 +1,4 @@
+ras pi
+sudo apt update
+sudo apt install -y build-essential git make gcc g++
+sudo apt install -y libncurses-dev libsdl2-dev libsdl2-mixer-dev

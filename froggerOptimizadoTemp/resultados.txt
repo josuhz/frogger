@@ -1,0 +1,50 @@
+Ciclos: 1000000 
+Tiempo promedio: 2975723 ns
+Ciclos: 1000000 
+Tiempo promedio: 3262063 ns
+Ciclos: 1000000 
+Tiempo promedio: 3364065 ns
+Ciclos de revision de Lilypads 15000000
+Tiempo promedio de colision con Lilypads 1757ns
+Ciclos de revision de Troncos 8000000
+Tiempo promedio de colision con Troncos 1737ns
+Ciclos de revision de Carros 8000000
+Tiempo promedio de colision con Carros 1813ns
+Ciclos: 7087 
+Tiempo promedio: 3088583 ns
+Ciclos de revision de Lilypads 106305
+Tiempo promedio de colision con Lilypads 1652ns
+Ciclos de revision de Troncos 56696
+Tiempo promedio de colision con Troncos 1644ns
+Ciclos de revision de Carros 56696
+Tiempo promedio de colision con Carros 1699ns
+Ciclos: 8412 
+Tiempo promedio: 3108107 ns
+Ciclos de revision de Lilypads 126180
+Tiempo promedio de colision con Lilypads 1655ns
+Ciclos de revision de Troncos 67296
+Tiempo promedio de colision con Troncos 1645ns
+Ciclos de revision de Carros 67296
+Tiempo promedio de colision con Carros 1707ns
+Ciclos: 1000000 
+
+Ciclos: 1000000 
+Tiempo promedio: 3308602 ns
+Ciclos de revision de Lilypads 15000000
+Tiempo promedio de colision con Lilypads 1826ns
+Ciclos de revision de Troncos 8000000
+Tiempo promedio de colision con Troncos 1832ns
+Ciclos de revision de Carros 8000000
+Tiempo promedio de colision con Carros 1894ns
+Promedio final: 3.3086e+06ns
+Desviacion estandar: 711154ns
+Ciclos: 1000000 
+Tiempo promedio: 1237110 ns
+Ciclos de revision de Lilypads 15000000
+Tiempo promedio de colision con Lilypads 1758ns
+Ciclos de revision de Troncos 8000000
+Tiempo promedio de colision con Troncos 1755ns
+Ciclos de revision de Carros 8000000
+Tiempo promedio de colision con Carros 1800ns
+Promedio final: 1.23711e+06ns
+Desviacion estandar: 285266ns
