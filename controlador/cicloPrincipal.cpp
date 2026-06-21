@@ -69,18 +69,30 @@ void ciclo(TableroNcurses& tablero, Rana& rana, Carro carros[],
             estaEnSafe = filaRana == filaSafe;
         }
         for(int i = 0; i<cantLilyPads;i++){
+<<<<<<< HEAD
             int fila = lilyPads[i].obtenerFila();
             int columna = lilyPads[i].obtenerColumna();
             int ancho = lilyPads[i].obtenerAncho();
             tablero.dibujarLilyPad(fila, columna, ancho);
             ///el contener se puede ensambladear
             if(contiene(filaRana, columnaRana, fila, columna, ancho)){
+=======
+            tablero.dibujarLilyPad(lilyPads[i].obtenerFila(),
+                                   lilyPads[i].obtenerColumna(),
+                                   lilyPads[i].obtenerAncho());
+            ///el contener se puede ensambladear
+            if(lilyPads[i].contiene(filaRana, columnaRana)){
+>>>>>>> 5aea73914d351d0b4fb86476df9925ecbb2fc952
                 estaSobreLily = true;
             }
         }
 
         for(int i = 0; i<cantTroncos;i++){
             ///el contener se puede ensambladear
+<<<<<<< HEAD
+=======
+            bool ranaIbaEnEsteTronco = troncos[i].contiene(filaRana, columnaRana);
+>>>>>>> 5aea73914d351d0b4fb86476df9925ecbb2fc952
             int desplazamiento = troncos[i].mover();
             int fila = troncos[i].obtenerFila();
             int columna = troncos[i].obtenerColumna();
@@ -89,9 +101,17 @@ void ciclo(TableroNcurses& tablero, Rana& rana, Carro carros[],
             if(contiene(filaRana, columnaRana, fila, columna, ancho + 1)){
                 rana.moverHorizontal(desplazamiento);
                 estaSobreTronco = true;
+<<<<<<< HEAD
              }
         
             
+=======
+            }
+
+            tablero.dibujarTronco(troncos[i].obtenerFila(),
+                                  troncos[i].obtenerColumna(),
+                                  troncos[i].obtenerAncho());
+>>>>>>> 5aea73914d351d0b4fb86476df9925ecbb2fc952
         }
 
         for(int i = 0; i<cantidad;i++){
@@ -100,9 +120,12 @@ void ciclo(TableroNcurses& tablero, Rana& rana, Carro carros[],
             //enviar al gas los numeros
             ///el ensamblador chekea todas esas kosas
             ///retorna true si muere false si no
+<<<<<<< HEAD
             //if(filaRana == carros[i].obtenerFila() && columnaRana <= carros[i].obtenerColumna() +4 &&
             //columnaRana >= carros[i].obtenerColumna() -1 ){
             if(contiene(filaRana, columnaRana, carros[i].obtenerFila(), carros[i].obtenerColumna(), 5)){
+=======
+>>>>>>> 5aea73914d351d0b4fb86476df9925ecbb2fc952
                 perdio = true; 
 				Mix_PlayChannel(-1, soncarro, 0);
             }
